@@ -2,6 +2,7 @@
 """python3 -c 'print(__import__("my_module").__doc__)'
 """
 import cmd
+import fnmatch
 from models.base_model import BaseModel
 from models import storage
 from models.user import User
@@ -24,6 +25,45 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         pass
 
+    def default(self, line):
+        my_list = line.split('.')
+        if len(my_list) > 1:
+            if my_list[1] == "all()":
+                self.do_all(my_list[0])
+            if my_list[1] == "count()":
+                if my_list[0] not in HBNBCommand.__my_classes:
+                    print("** class doesn't exist **")
+                else:
+                    count = 0
+                    for key in storage.all().keys():
+                        comp, other = key.split('.')
+                        if comp == my_list[0]:
+                            count += 1
+                    print(count)
+            if fnmatch.fnmatchcase(line, "*.show(*)"):
+                self.do_show(HBNBCommand.__get_line(line))
+            if fnmatch.fnmatchcase(line, "*.destroy(*)"):
+                self.do_destroy(HBNBCommand.__get_line(line))
+            if fnmatch.fnmatchcase(line, "*.update(*)"):
+                class_name = my_list[0]
+                str = my_list[1].split('(')
+                str = str[1].split(')')
+                str = str[0].split(',')
+                for key in str:
+                    tmp = key.split('"')
+                    class_name += f" {tmp[1]}"
+                self.do_update(class_name)
+
+    def __get_line(line):
+        my_list = line.split('.')
+        str_list = my_list[1].split('(')
+        str_list = str_list[1].split(')')
+        if str_list[0] == '':
+            return my_list[0]
+        else:
+            return f"{my_list[0]} {str_list[0]}"
+        return (new_list)
+
     def do_EOF(self, line):
         """EOF command to exit the program
         """
@@ -37,7 +77,7 @@ class HBNBCommand(cmd.Cmd):
     def do_create(self, line):
         """creates an instance of an object
         """
-        my_list = line.split()
+        my_list = line.split(' ')
         if not line:
             print("** class name missing **")
         elif my_list[0] not in HBNBCommand.__my_classes:
@@ -118,13 +158,16 @@ class HBNBCommand(cmd.Cmd):
                 print('** class doesn\'t exist **')
                 flag = 2
         if not flag == 2:
+            obj_list = []
             my_dict = storage.objects
-            for key, value in my_dict.items():
-                if flag == 1:
+            if flag == 1:
+                for key, value in my_dict.items():
                     if value['__class__'] == my_list[0]:
-                        print(storage.all()[key])
-                else:
-                    print(storage.all()[key])
+                        obj_list.append(storage.all()[key])
+            if flag == 0:
+                for key, value in my_dict.items():
+                    obj_list.append(storage.all()[key])
+            print(obj_list)
 
     def do_update(self, line):
         """updates the objects in the file
