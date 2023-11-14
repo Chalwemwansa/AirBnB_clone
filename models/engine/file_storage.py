@@ -32,7 +32,7 @@ class FileStorage:
 "], "%Y-%m-%dT%H:%M:%S.%f")
                 my_dict[tmp[0]] = f"[\
 {tmp[1]['__class__']}] ({tmp[1]['id']}) {tmp[1]}"
-        return (my_dict)
+        return (self.__objects)
 
     def new(self, obj):
         """function that adds to the objects dictionary
