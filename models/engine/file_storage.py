@@ -8,7 +8,7 @@ from datetime import datetime
 class FileStorage:
     """class responsible for storage of class insatnces
     """
-    __filepath = "file.json"
+    __file_path = "file.json"
     # attribute that stores the different objects as key value pairs
     __objects = {}
 
@@ -37,20 +37,20 @@ class FileStorage:
     def new(self, obj):
         """function that adds to the objects dictionary
         """
-        self.__objects[f"{obj['__class__']}.{obj['id']}"] = obj
+        self.__objects[f"{obj.__class__.name}.{obj.id}"] = obj
 
     def save(self):
         """function that serializes objects to the json file
         """
-        with open(self.__filepath, 'w', encoding='UTF-8') as json_file:
+        with open(self.__file_path, 'w', encoding='UTF-8') as json_file:
             dump(self.__objects, json_file)
 
     def reload(self):
         """checks if a file exists reloads from it if it does
         """
         from os.path import exists
-        if exists(self.__filepath):
-            with open(self.__filepath, 'r', encoding='UTF-8') as json_file:
+        if exists(self.__file_path):
+            with open(self.__file_path, 'r', encoding='UTF-8') as json_file:
                 try:
                     self.__objects = load(json_file)
                 except JSONDecodeError:
