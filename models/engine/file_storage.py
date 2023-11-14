@@ -37,7 +37,7 @@ class FileStorage:
     def new(self, obj):
         """function that adds to the objects dictionary
         """
-        self.__objects[f"{obj.__class__.name}.{obj.id}"] = obj
+        self.__objects[f"{obj.__class__.__name__}.{obj.id}"] = obj.to_dict()
 
     def save(self):
         """function that serializes objects to the json file

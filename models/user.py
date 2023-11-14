@@ -3,6 +3,7 @@
 """
 from .base_model import BaseModel
 
+
 class User(BaseModel):
     """class that inherits from base_model
     python3 -c 'print(__import__("my_module").MyClass.__doc__)'
