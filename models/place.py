@@ -19,7 +19,7 @@ class Place(BaseModel):
     longitude = 0.0
     amenity_ids = []
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """initialises the superclass (BaseModel)
         """
-        super().__init__(self)
+        super().__init__(self, *args, **kwargs)

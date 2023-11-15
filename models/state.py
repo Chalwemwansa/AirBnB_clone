@@ -9,7 +9,7 @@ class State(BaseModel):
     """
     name = ''
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """initialises the super class
         """
-        super().__init__(self)
+        super().__init__(self, *args, **kwargs)

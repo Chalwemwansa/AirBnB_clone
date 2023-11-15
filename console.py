@@ -158,16 +158,16 @@ class HBNBCommand(cmd.Cmd):
                 print('** class doesn\'t exist **')
                 flag = 2
         if not flag == 2:
-            obj_list = []
-            my_dict = storage.objects
+            my_list = []
             if flag == 1:
-                for key, value in my_dict.items():
-                    if value['__class__'] == my_list[0]:
-                        obj_list.append(storage.all()[key])
+                for key, value in storage.all().items():
+                    cmp, x = key.split('.')
+                    if (cmp == my_list[0]):
+                        my_list.append(str(value))
             if flag == 0:
-                for key, value in my_dict.items():
-                    obj_list.append(storage.all()[key])
-            print(obj_list)
+                for value in storage.all().values():
+                    my_list.append(str(value))
+            print(my_list)
 
     def do_update(self, line):
         """updates the objects in the file
@@ -198,15 +198,15 @@ class HBNBCommand(cmd.Cmd):
                 if length == 3:
                     print('** value missing **')
                 elif length > 3:
-                    my_dict = storage.objects
+                    obj = storage.all()[comp]
                     if my_list[3].startswith('"'):
                         mine = my_list[3].split('"')[1]
                     elif my_list[3].startswith("'"):
                         mine = my_list[3].split("'")[1]
                     else:
                         mine = my_list[3]
-                    my_dict[comp][my_list[2]] = mine
-                    storage.save()
+                    setattr(obj, my_list[2], mine)
+                    obj.save()
 
 
 if __name__ == '__main__':

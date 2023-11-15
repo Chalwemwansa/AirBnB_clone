@@ -10,7 +10,7 @@ class City(BaseModel):
     state_id = ''
     name = ''
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """initialises the super class in the City class
         """
-        super().__init__(self)
+        super().__init__(self, *args, **kwargs)

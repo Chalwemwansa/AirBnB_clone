@@ -10,8 +10,8 @@ class Amenity(BaseModel):
     """
     name = ''
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """python3 -c 'print(__import__("my_module").MyClass.my_function
         initialises the BaseModel
         """
-        super().__init__(self)
+        super().__init__(self, *args, **kwargs)
