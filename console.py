@@ -61,7 +61,6 @@ class HBNBCommand(cmd.Cmd):
                     if type(my_dict) is dict:
                         for key, value in my_dict.items():
                             query = id + f" {key} {value}"
-                            print(query)
                             self.do_update(query)
                 else:
                     str = str[1].split(',')
