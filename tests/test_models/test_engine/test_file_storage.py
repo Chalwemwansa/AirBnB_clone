@@ -140,6 +140,7 @@ class TestFileStorage_methods(unittest.TestCase):
             models.storage.save(None)
 
     def test_reload(self):
+        models.storage.reload()
         bm = BaseModel()
         us = User()
         st = State()

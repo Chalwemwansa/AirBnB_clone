@@ -3,6 +3,7 @@
 """
 import cmd
 import fnmatch
+import ast
 from models.base_model import BaseModel
 from models import storage
 from models.user import User
@@ -48,11 +49,25 @@ class HBNBCommand(cmd.Cmd):
                 class_name = my_list[0]
                 str = my_list[1].split('(')
                 str = str[1].split(')')
-                str = str[0].split(',')
-                for key in str:
-                    tmp = key.split('"')
-                    class_name += f" {tmp[1]}"
-                self.do_update(class_name)
+                str = str[0].split(', ', 1)
+                new_str = str[0]
+                new_str = new_str.split('"')
+                id = class_name + f" {new_str[1]}"
+                if (len(str[1].split('{', 1)) == 2):
+                    my_dict = str[1].split('{', 1)
+                    my_dict = my_dict[1].split('}', 1)
+                    my_dict = "{" + f"{my_dict[0]}" + "}"
+                    my_dict = ast.literal_eval(my_dict)
+                    if type(my_dict) is dict:
+                        for key, value in my_dict.items():
+                            query = id + f" {key} {value}"
+                            self.do_update(query)
+                else:
+                    str = str[1].split(',')
+                    for key in str:
+                        tmp = key.split('"')
+                        id += f" {tmp[1]}"
+                    self.do_update(id)
 
     def __get_line(line):
         my_list = line.split('.')
@@ -141,6 +156,7 @@ class HBNBCommand(cmd.Cmd):
                 if key == comp:
                     flag = 1
                     del my_dict[key]
+                    storage.save()
                     break
             if flag == 0:
                 print('** no instance found **')
@@ -158,16 +174,16 @@ class HBNBCommand(cmd.Cmd):
                 print('** class doesn\'t exist **')
                 flag = 2
         if not flag == 2:
-            obj_list = []
-            my_dict = storage.objects
+            new_list = []
             if flag == 1:
-                for key, value in my_dict.items():
-                    if value['__class__'] == my_list[0]:
-                        obj_list.append(storage.all()[key])
+                for key, value in storage.all().items():
+                    cmp, x = key.split('.')
+                    if (cmp == my_list[0]):
+                        new_list.append(str(value))
             if flag == 0:
-                for key, value in my_dict.items():
-                    obj_list.append(storage.all()[key])
-            print(obj_list)
+                for value in storage.all().values():
+                    new_list.append(str(value))
+            print(new_list)
 
     def do_update(self, line):
         """updates the objects in the file
@@ -197,16 +213,16 @@ class HBNBCommand(cmd.Cmd):
                     print('** attribute name missing **')
                 if length == 3:
                     print('** value missing **')
-                elif length > 3:
-                    my_dict = storage.objects
+                elif length > 3 and not flag == 0:
+                    obj = storage.all()[comp]
                     if my_list[3].startswith('"'):
                         mine = my_list[3].split('"')[1]
                     elif my_list[3].startswith("'"):
                         mine = my_list[3].split("'")[1]
                     else:
                         mine = my_list[3]
-                    my_dict[comp][my_list[2]] = mine
-                    storage.save()
+                    setattr(obj, my_list[2], mine)
+                    obj.save()
 
 
 if __name__ == '__main__':
