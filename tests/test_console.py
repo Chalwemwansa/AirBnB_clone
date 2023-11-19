@@ -1,8 +1,7 @@
 #!/usr/bin/python3
 """
-    Module for TestHBNBCommand class
+    python3 -c 'print(__import__("my_module").__doc__)'
 """
-
 from console import HBNBCommand
 from models.engine.file_storage import FileStorage
 import unittest
